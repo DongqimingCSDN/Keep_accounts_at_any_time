@@ -318,38 +318,45 @@ export function AppProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'SET_FUND_ACCOUNTS', payload: fundAccounts });
       dispatch({ type: 'SET_AUTO_TRANSACTIONS', payload: autoTransactions });
       dispatch({ type: 'SET_SETTINGS', payload: settings });
+      // 本地数据加载完毕，立即解除 UI 阻塞
+      dispatch({ type: 'SET_LOADING', payload: false });
+    } catch {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+    // 后台异步加载在线数据，不阻塞首屏渲染
+    if (isSupabaseConfigured()) {
+      loadOnlineAuthData();
+    }
+  };
 
-      // 检查是否已登录
-      if (isSupabaseConfigured()) {
-        const user = await getCurrentUser();
-        if (user) {
-          dispatch({ type: 'SET_USER', payload: user });
-          
-          try {
-            const profile = await getCurrentProfile();
-            dispatch({ type: 'SET_USER_PROFILE', payload: profile });
-          } catch {}
-          
-          const families = await getFamiliesForUser();
-          dispatch({ type: 'SET_USER_FAMILIES', payload: families });
-          
-          const activeFamilyId = await StorageService.getActiveFamilyId();
-          dispatch({ type: 'SET_ACTIVE_FAMILY', payload: activeFamilyId });
-          
-          const currentFamily = families.find(f => f.id === activeFamilyId) || families[0] || null;
-          dispatch({ type: 'SET_FAMILY', payload: currentFamily });
-          
-          if (currentFamily) {
-            await loadOnlineData(currentFamily.id);
-          } else {
-            await loadPersonalOnlineData(user.id);
-          }
+  const loadOnlineAuthData = async () => {
+    try {
+      const user = await getCurrentUser();
+      if (user) {
+        dispatch({ type: 'SET_USER', payload: user });
+        
+        try {
+          const profile = await getCurrentProfile();
+          dispatch({ type: 'SET_USER_PROFILE', payload: profile });
+        } catch {}
+        
+        const families = await getFamiliesForUser();
+        dispatch({ type: 'SET_USER_FAMILIES', payload: families });
+        
+        const activeFamilyId = await StorageService.getActiveFamilyId();
+        dispatch({ type: 'SET_ACTIVE_FAMILY', payload: activeFamilyId });
+        
+        const currentFamily = families.find(f => f.id === activeFamilyId) || families[0] || null;
+        dispatch({ type: 'SET_FAMILY', payload: currentFamily });
+        
+        if (currentFamily) {
+          await loadOnlineData(currentFamily.id);
+        } else {
+          await loadPersonalOnlineData(user.id);
         }
       }
     } catch {
-      // Use default state on error
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false });
+      // 后台同步失败不影响本地使用
     }
   };
 
@@ -433,17 +440,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       subscriptionsRef.current.push(sub4);
     }
 
-    // 轮询作为 Realtime 的后备方案，每 30 秒刷新一次
-    if (pollingRef.current) clearInterval(pollingRef.current);
-    pollingRef.current = setInterval(() => {
-      DataService.fetchTransactions(familyId).then((data) => {
-        const localPersonalTx = stateRef.current.transactions.filter(t => !t.familyId);
-        const onlineTxIds = new Set(data.map((t: Transaction) => t.id));
-        const keptLocalTx = localPersonalTx.filter(t => !onlineTxIds.has(t.id));
-        dispatch({ type: 'SET_TRANSACTIONS', payload: [...keptLocalTx, ...data] });
-      }).catch(() => {});
-    }, 30000);
-  };
+    };
 
   const loadPersonalOnlineData = async (userId: string) => {
     try {

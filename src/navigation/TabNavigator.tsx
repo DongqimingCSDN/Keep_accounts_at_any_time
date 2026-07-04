@@ -1,16 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useRef, lazy, Suspense } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from '../store/ThemeContext';
 import HomeScreen from '../screens/HomeScreen';
-import BillsScreen from '../screens/BillsScreen';
-import StatisticsScreen from '../screens/StatisticsScreen';
-import SettingsStack from './SettingsStack';
-import AddTransactionScreen from '../screens/AddTransactionScreen';
-import SmartRecognizeScreen from '../screens/SmartRecognizeScreen';
-import TextBookkeepingScreen from '../screens/TextBookkeepingScreen';
 import { Svg, Path } from 'react-native-svg';
+
+const BillsScreen = lazy(() => import('../screens/BillsScreen'));
+const StatisticsScreen = lazy(() => import('../screens/StatisticsScreen'));
+const SettingsStack = lazy(() => import('./SettingsStack'));
+const AddTransactionScreen = lazy(() => import('../screens/AddTransactionScreen'));
+const SmartRecognizeScreen = lazy(() => import('../screens/SmartRecognizeScreen'));
+const TextBookkeepingScreen = lazy(() => import('../screens/TextBookkeepingScreen'));
 
 export type RootStackParamList = {
   MainTabs: undefined;
@@ -165,7 +166,8 @@ export default function TabNavigator() {
 
   return (
     <NavigationContainer ref={navigationRef} theme={navigationTheme}>
-      <Stack.Navigator
+      <Suspense fallback={null}>
+        <Stack.Navigator
         screenOptions={{
           headerShadowVisible: false,
           headerStyle: {
@@ -209,6 +211,7 @@ export default function TabNavigator() {
           }}
         />
       </Stack.Navigator>
+      </Suspense>
     </NavigationContainer>
   );
 }

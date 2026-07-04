@@ -47,10 +47,23 @@ export default function HomeScreen({ navigation }: any) {
     [state.transactions, today, currentUserId]
   );
 
-  const personalMonthIncome = personalMonthTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-  const personalMonthExpense = personalMonthTx.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-  const personalTodayIncome = personalTodayTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-  const personalTodayExpense = personalTodayTx.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+  const { personalMonthIncome, personalMonthExpense } = useMemo(() => {
+    let income = 0, expense = 0;
+    for (const t of personalMonthTx) {
+      if (t.type === 'income') income += t.amount;
+      else if (t.type === 'expense') expense += t.amount;
+    }
+    return { personalMonthIncome: income, personalMonthExpense: expense };
+  }, [personalMonthTx]);
+
+  const { personalTodayIncome, personalTodayExpense } = useMemo(() => {
+    let income = 0, expense = 0;
+    for (const t of personalTodayTx) {
+      if (t.type === 'income') income += t.amount;
+      else if (t.type === 'expense') expense += t.amount;
+    }
+    return { personalTodayIncome: income, personalTodayExpense: expense };
+  }, [personalTodayTx]);
 
   const familyMonthTx = useMemo(
     () =>
@@ -68,10 +81,23 @@ export default function HomeScreen({ navigation }: any) {
     [state.transactions, today]
   );
 
-  const familyMonthIncome = familyMonthTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-  const familyMonthExpense = familyMonthTx.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-  const familyTodayIncome = familyTodayTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-  const familyTodayExpense = familyTodayTx.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+  const { familyMonthIncome, familyMonthExpense } = useMemo(() => {
+    let income = 0, expense = 0;
+    for (const t of familyMonthTx) {
+      if (t.type === 'income') income += t.amount;
+      else if (t.type === 'expense') expense += t.amount;
+    }
+    return { familyMonthIncome: income, familyMonthExpense: expense };
+  }, [familyMonthTx]);
+
+  const { familyTodayIncome, familyTodayExpense } = useMemo(() => {
+    let income = 0, expense = 0;
+    for (const t of familyTodayTx) {
+      if (t.type === 'income') income += t.amount;
+      else if (t.type === 'expense') expense += t.amount;
+    }
+    return { familyTodayIncome: income, familyTodayExpense: expense };
+  }, [familyTodayTx]);
 
   const personalBudgets = useMemo(
     () => state.budgets.filter((b) => b.month === currentMonth && (b.scope || 'personal') === 'personal'),

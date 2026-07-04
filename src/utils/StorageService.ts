@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Transaction, Category, Budget, AppSettings, AccountType, FundAccount, AutoTransaction } from '../types';
 import { DEFAULT_CATEGORIES, DEFAULT_FUND_ACCOUNTS } from '../constants/categories';
-import * as XLSX from 'xlsx';
+// xlsx 改为动态导入以减少主 bundle 体积
 
 const STORAGE_KEYS = {
   TRANSACTIONS: '@keep_accounts_transactions',
@@ -340,6 +340,7 @@ export interface ExportEntry {
 }
 
 export async function exportToExcel(entries: ExportEntry[]): Promise<string> {
+  const XLSX = await import('xlsx');
   const wb = XLSX.utils.book_new();
   const mappedEntries = entries.map(e => ({
     '日期': e.date,
