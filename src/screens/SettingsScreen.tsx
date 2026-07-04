@@ -19,6 +19,7 @@ import * as StorageService from '../utils/StorageService';
 import * as DataService from '../services/dataService';
 import { getProfiles } from '../services/profileService';
 import { getFamilyMembers } from '../services/familyService';
+import { isExpoGo } from '../services/notificationService';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -33,6 +34,12 @@ export default function SettingsScreen({ navigation }: Props) {
   const [currencyModalVisible, setCurrencyModalVisible] = useState(false);
   const [exportModalVisible, setExportModalVisible] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [reminderModalVisible, setReminderModalVisible] = useState(false);
+  const [reminderHour, setReminderHour] = useState('20');
+  const [reminderMinute, setReminderMinute] = useState('00');
+
+  const reminderEnabled = state.settings.reminderEnabled || false;
+  const reminderTime = state.settings.reminderTime || '20:00';
 
   // 导出选项
   const [selectedEntities, setSelectedEntities] = useState<Set<string>>(new Set());
@@ -311,6 +318,43 @@ export default function SettingsScreen({ navigation }: Props) {
             thumbColor="#FFFFFF"
           />
         </View>
+
+        <View style={[styles.item, { borderBottomColor: colors.border }]}>
+          <Text style={[styles.itemLabel, { color: colors.text }]}>记账提醒</Text>
+          <Switch
+            value={reminderEnabled}
+            onValueChange={(value) => updateSettings({ reminderEnabled: value })}
+            trackColor={{ false: colors.border, true: colors.primary }}
+            thumbColor="#FFFFFF"
+          />
+        </View>
+
+        {isExpoGo && (
+          <Text style={[styles.reminderHint, { color: colors.textSecondary }]}>
+            Expo Go 不支持通知功能，请使用正式构建版本
+          </Text>
+        )}
+
+        {reminderEnabled && (
+          <TouchableOpacity
+            style={[styles.item, { borderBottomColor: colors.border }]}
+            onPress={() => {
+              const [h, m] = reminderTime.split(':');
+              setReminderHour(h);
+              setReminderMinute(m);
+              setReminderModalVisible(true);
+            }}
+            activeOpacity={0.6}
+          >
+            <Text style={[styles.itemLabel, { color: colors.text }]}>提醒时间</Text>
+            <View style={styles.itemRight}>
+              <Text style={[styles.itemValue, { color: colors.primary }]}>
+                {reminderTime}
+              </Text>
+              {renderArrow()}
+            </View>
+          </TouchableOpacity>
+        )}
 
         {state.settings.showAssistant && (
           <TouchableOpacity
@@ -651,6 +695,91 @@ export default function SettingsScreen({ navigation }: Props) {
         </TouchableOpacity>
       </Modal>
 
+      {/* 提醒时间选择 Modal */}
+      <Modal
+        visible={reminderModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setReminderModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setReminderModalVisible(false)}
+        >
+          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>设置提醒时间</Text>
+
+            <View style={styles.timePickerRow}>
+              <View style={styles.timePickerCol}>
+                <TouchableOpacity
+                  style={[styles.timeBtn, { backgroundColor: colors.primaryLight }]}
+                  onPress={() => setReminderHour(h => String(Math.min(23, Number(h) + 1)).padStart(2, '0'))}
+                  activeOpacity={0.6}
+                >
+                  <Text style={[styles.timeBtnArrow, { color: colors.primary }]}>▲</Text>
+                </TouchableOpacity>
+                <View style={[styles.timeDisplay, { backgroundColor: colors.background, borderColor: colors.border }]}>
+                  <Text style={[styles.timeDisplayText, { color: colors.text }]}>{reminderHour}</Text>
+                </View>
+                <TouchableOpacity
+                  style={[styles.timeBtn, { backgroundColor: colors.primaryLight }]}
+                  onPress={() => setReminderHour(h => String(Math.max(0, Number(h) - 1)).padStart(2, '0'))}
+                  activeOpacity={0.6}
+                >
+                  <Text style={[styles.timeBtnArrow, { color: colors.primary }]}>▼</Text>
+                </TouchableOpacity>
+                <Text style={[styles.timeLabel, { color: colors.textSecondary }]}>时</Text>
+              </View>
+
+              <Text style={[styles.timeColon, { color: colors.text }]}>:</Text>
+
+              <View style={styles.timePickerCol}>
+                <TouchableOpacity
+                  style={[styles.timeBtn, { backgroundColor: colors.primaryLight }]}
+                  onPress={() => setReminderMinute(m => String(Math.min(59, Number(m) + 5)).padStart(2, '0'))}
+                  activeOpacity={0.6}
+                >
+                  <Text style={[styles.timeBtnArrow, { color: colors.primary }]}>▲</Text>
+                </TouchableOpacity>
+                <View style={[styles.timeDisplay, { backgroundColor: colors.background, borderColor: colors.border }]}>
+                  <Text style={[styles.timeDisplayText, { color: colors.text }]}>{reminderMinute}</Text>
+                </View>
+                <TouchableOpacity
+                  style={[styles.timeBtn, { backgroundColor: colors.primaryLight }]}
+                  onPress={() => setReminderMinute(m => String(Math.max(0, Number(m) - 5)).padStart(2, '0'))}
+                  activeOpacity={0.6}
+                >
+                  <Text style={[styles.timeBtnArrow, { color: colors.primary }]}>▼</Text>
+                </TouchableOpacity>
+                <Text style={[styles.timeLabel, { color: colors.textSecondary }]}>分</Text>
+              </View>
+            </View>
+
+            <View style={styles.timePickerActions}>
+              <TouchableOpacity
+                style={[styles.timeActionBtn, { backgroundColor: colors.background }]}
+                onPress={() => setReminderModalVisible(false)}
+                activeOpacity={0.6}
+              >
+                <Text style={[styles.timeActionText, { color: colors.textSecondary }]}>取消</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.timeActionBtn, { backgroundColor: colors.primary }]}
+                onPress={() => {
+                  const time = `${reminderHour}:${reminderMinute}`;
+                  updateSettings({ reminderTime: time });
+                  setReminderModalVisible(false);
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={[styles.timeActionText, { color: '#FFFFFF' }]}>确定</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
     </ScrollView>
   );
 }
@@ -718,6 +847,12 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 6,
     letterSpacing: 0.5,
+  },
+  reminderHint: {
+    fontSize: 12,
+    paddingHorizontal: 18,
+    paddingBottom: 10,
+    fontStyle: 'italic',
   },
   item: {
     flexDirection: 'row',
@@ -864,6 +999,65 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalBtnText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  // 时间选择器样式
+  timePickerRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  timePickerCol: {
+    alignItems: 'center',
+  },
+  timeBtn: {
+    width: 56,
+    height: 36,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timeBtnArrow: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  timeDisplay: {
+    width: 72,
+    height: 56,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 4,
+  },
+  timeDisplayText: {
+    fontSize: 28,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  timeLabel: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  timeColon: {
+    fontSize: 32,
+    fontWeight: '700',
+    marginHorizontal: 12,
+    marginBottom: 20,
+  },
+  timePickerActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  timeActionBtn: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  timeActionText: {
     fontSize: 16,
     fontWeight: '600',
   },

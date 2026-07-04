@@ -8,6 +8,7 @@ import { getFamilyMembers, Family, FamilyMember, getFamiliesForUser, migratePers
 import { getCurrentProfile, UserProfile } from '../services/profileService';
 import { DEFAULT_CATEGORIES, DEFAULT_FUND_ACCOUNTS } from '../constants/categories';
 import { isSupabaseConfigured } from '../lib/supabase';
+import { restoreReminderOnStartup, applyReminder } from '../services/notificationService';
 
 // ============ State ============
 
@@ -327,6 +328,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (isSupabaseConfigured()) {
       loadOnlineAuthData();
     }
+    // 恢复记账提醒（非阻塞）
+    restoreReminderOnStartup();
   };
 
   const loadOnlineAuthData = async () => {
@@ -715,12 +718,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const setBudget = useCallback(async (budget: Budget) => {
     if (budget.scope === 'family' && state.activeFamilyId) {
       const result = await DataService.setBudget(state.activeFamilyId, budget.month, budget.amount, budget.categoryId);
-      dispatch({ type: 'SET_BUDGET', payload: { ...result, scope: 'family', familyId: state.activeFamilyId } });
+      const familyBudget = { ...result, scope: 'family' as const, familyId: state.activeFamilyId };
+      dispatch({ type: 'SET_BUDGET', payload: familyBudget });
+      await StorageService.setBudget(familyBudget);
     } else {
       if (state.currentUser) {
         try {
           const result = await DataService.setPersonalBudget(state.currentUser.id, budget.month, budget.amount, budget.categoryId);
-          dispatch({ type: 'SET_BUDGET', payload: { ...result, scope: 'personal', userId: state.currentUser.id } });
+          const personalBudget = { ...result, scope: 'personal' as const, userId: state.currentUser.id };
+          dispatch({ type: 'SET_BUDGET', payload: personalBudget });
+          await StorageService.setBudget(personalBudget);
         } catch {
           await StorageService.setBudget({ ...budget, scope: budget.scope || 'personal' });
           dispatch({ type: 'SET_BUDGET', payload: { ...budget, scope: budget.scope || 'personal' } });
@@ -755,6 +762,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_SETTINGS', payload: updated });
     if (state.currentUser) {
       try { await DataService.saveUserSettings(state.currentUser.id, updated as any); } catch {}
+    }
+    // 当提醒设置变更时，同步更新通知调度
+    if ('reminderEnabled' in settings || 'reminderTime' in settings) {
+      applyReminder({
+        enabled: updated.reminderEnabled || false,
+        time: updated.reminderTime || '20:00',
+      });
     }
   }, [state.settings, state.currentUser]);
 

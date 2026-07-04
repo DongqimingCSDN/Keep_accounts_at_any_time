@@ -78,6 +78,8 @@ export interface AppSettings {
   currency: 'CNY' | 'USD' | 'EUR' | 'JPY';
   theme: 'light' | 'dark' | 'system';
   showAssistant?: boolean;
+  reminderEnabled?: boolean;
+  reminderTime?: string; // HH:mm 格式，如 "20:00"
 }
 
 // 货币符号映射

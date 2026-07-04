@@ -193,6 +193,7 @@ export default function AccountManageScreen() {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         onDragEnd={handleDragEnd}
+        style={{ flex: 1 }}
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>

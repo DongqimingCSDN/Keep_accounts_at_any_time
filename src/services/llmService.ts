@@ -56,8 +56,10 @@ export const LLM_PROVIDERS: Record<LLMProvider, LLMProviderConfig> = {
   },
 };
 
-function buildSystemPrompt(expenseCategories: string[], incomeCategories: string[], fundAccounts: string[]): string {
+function buildSystemPrompt(expenseCategories: string[], incomeCategories: string[], fundAccounts: string[], currentTime: string): string {
   return `你是一个智能记账助手。用户会给你一段从支付/收款截图上OCR识别出的文字，你需要从中提取出结构化的交易信息。
+
+当前系统时间：${currentTime}
 
 请严格按照以下JSON格式输出，不要输出任何其他内容：
 {
@@ -92,12 +94,14 @@ ${fundAccounts.join('、')}
 3. 如果是支出，type 为 expense；如果是收入，type 为 income
 4. 优先根据文字内容判断收支类型（如"付款"、"消费"为支出，"收款"、"到账"为收入）
 5. note 字段填写商户名称或交易描述
-6. 日期和时间：只有当OCR文本中明确包含日期或时间信息时才填写（如"2024-01-15"、"18:30"、"今天"、"刚才"），如果文本中没有明确的日期时间信息，date和time字段省略，date的confidence设为0
+6. 日期和时间：只有当OCR文本中明确包含日期或时间信息时才填写。如果OCR文本中提到了"今天"、"刚才"等相对时间，请根据当前系统时间计算。如果OCR文本中没有明确的日期时间信息，date和time字段省略，date的confidence设为0
 7. 绝对禁止编造日期和时间，宁可留空也不要猜测`;
 }
 
-function buildTextBookkeepingPrompt(expenseCategories: string[], incomeCategories: string[], fundAccounts: string[]): string {
+function buildTextBookkeepingPrompt(expenseCategories: string[], incomeCategories: string[], fundAccounts: string[], currentTime: string): string {
   return `你是一个智能记账助手。用户会用自然语言描述消费或收入，可能包含多笔交易，你需要从中提取出所有交易的结构化信息。
+
+当前系统时间：${currentTime}
 
 请严格按照以下JSON格式输出，不要输出任何其他内容：
 [
@@ -128,8 +132,8 @@ ${fundAccounts.join('、')}
 2. 如果是支出，type 为 expense；如果是收入，type 为 income
 3. 根据描述判断收支类型（如"买了"、"花了"、"付了"为支出，"收到"、"赚了"为收入）
 4. note 字段填写交易描述或商户名
-5. 日期和时间：只有当用户明确提到时才填写（如"今天午饭"、"昨天打车"），如果用户没有明确提到，date 和 time 省略
-6. 绝对禁止编造或猜测日期时间
+5. 日期和时间：只有当用户明确提到时间信息时才填写。如果用户提到了"今天"，请填写当前系统日期；如果提到"昨天"，请填写当前系统日期减一天；如果提到"刚才"、"现在"，请填写当前系统时间。如果用户完全没有提到任何时间信息，date 和 time 字段都省略不填
+6. 绝对禁止在用户没有提到任何时间信息时编造日期和时间，宁可留空
 7. 如果用户没有提到资金账户，fundAccountName 可以省略
 8. 用户描述了多笔交易时，必须全部提取出来，每笔交易作为数组中的一个元素
 9. 如果多笔交易共用同一个日期或资金账户，每笔交易都要完整填写`;
@@ -188,6 +192,9 @@ export async function parseTransactionFromText(
 
   console.log('[LLM] 调用解析, provider=${provider}, model=${model}, url=${baseUrl}/chat/completions');
 
+  const now = new Date();
+  const currentTimeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
   try {
     const response = await llmFetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
@@ -202,6 +209,7 @@ export async function parseTransactionFromText(
             dynamicOptions?.expenseCategories ?? ['餐饮', '交通', '购物', '娱乐', '居住', '医疗', '教育', '通讯', '其他'],
             dynamicOptions?.incomeCategories ?? ['工资', '兼职', '投资', '红包', '其他'],
             dynamicOptions?.fundAccounts ?? ['微信', '支付宝', '现金', '银行卡'],
+            currentTimeStr,
           ) },
           { role: 'user', content: `请从以下OCR识别文本中提取交易信息：\n\n${ocrText}` },
         ],
@@ -282,6 +290,9 @@ export async function parseTextBookkeeping(
 
   console.log('[LLM] 文字记账解析, provider=${provider}, model=${model}');
 
+  const now = new Date();
+  const currentTimeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
   try {
     const response = await llmFetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
@@ -296,6 +307,7 @@ export async function parseTextBookkeeping(
             dynamicOptions?.expenseCategories ?? ['餐饮', '交通', '购物', '娱乐', '居住', '医疗', '教育', '通讯', '其他'],
             dynamicOptions?.incomeCategories ?? ['工资', '兼职', '投资', '红包', '其他'],
             dynamicOptions?.fundAccounts ?? ['微信', '支付宝', '现金', '银行卡'],
+            currentTimeStr,
           ) },
           { role: 'user', content: text },
         ],
