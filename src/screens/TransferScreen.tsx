@@ -100,7 +100,7 @@ export default function TransferScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow }]}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>转出账户</Text>
         <TouchableOpacity
           style={[styles.accountBtn, { backgroundColor: colors.background, borderColor: colors.border }]}
@@ -212,9 +212,13 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderRadius: 16,
     padding: 20,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   sectionTitle: {
     fontSize: 14,

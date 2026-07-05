@@ -155,7 +155,7 @@ export default function AutoTransactionManageScreen() {
     const account = fundAccounts.find((a) => a.id === item.fundAccountId);
 
     return (
-      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow }]}>
         <View style={styles.cardTop}>
           <View style={styles.cardLeft}>
             <View style={[styles.iconWrap, { backgroundColor: (cat?.color || colors.primary) + '20' }]}>
@@ -538,10 +538,14 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   card: {
-    borderWidth: 1,
-    borderRadius: 12,
+    borderWidth: 0.5,
+    borderRadius: 16,
     padding: 14,
     marginBottom: 10,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   cardTop: {
     flexDirection: 'row',

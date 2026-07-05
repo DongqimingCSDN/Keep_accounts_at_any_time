@@ -32,6 +32,7 @@ interface ThemeColors {
   overlay: string;
   gradientStart: string;
   gradientEnd: string;
+  divider: string;
 }
 
 interface ThemeContextType {
@@ -43,16 +44,16 @@ interface ThemeContextType {
 }
 
 const lightColors: ThemeColors = {
-  background: '#F7F8FA',
+  background: '#F2F4F7',
   surface: '#FFFFFF',
   text: '#1D2129',
-  textSecondary: '#86909C',
-  textTertiary: '#C9CDD4',
-  primary: '#5B6CF7',
-  primaryLight: '#F0F1FE',
-  primaryDark: '#4250D4',
-  border: '#E5E6EB',
-  borderLight: '#F2F3F5',
+  textSecondary: '#7D8490',
+  textTertiary: '#9CA3AF',
+  primary: '#4F60E8',
+  primaryLight: '#EDEFFD',
+  primaryDark: '#3B49D0',
+  border: '#DEE0E6',
+  borderLight: '#EEF0F4',
   card: '#FFFFFF',
   cardElevated: '#FFFFFF',
   error: '#F53F3F',
@@ -62,14 +63,15 @@ const lightColors: ThemeColors = {
   warning: '#FF7D00',
   warningLight: '#FFF7E8',
   tabBarBackground: '#FFFFFF',
-  tabBarActive: '#5B6CF7',
-  tabBarInactive: '#C9CDD4',
-  inputBackground: '#F7F8FA',
-  placeholder: '#C9CDD4',
+  tabBarActive: '#4F60E8',
+  tabBarInactive: '#9CA3AF',
+  inputBackground: '#F2F4F7',
+  placeholder: '#9CA3AF',
   shadow: 'rgba(0, 0, 0, 0.06)',
   overlay: 'rgba(0, 0, 0, 0.45)',
-  gradientStart: '#5B6CF7',
-  gradientEnd: '#8B5CF6',
+  gradientStart: '#4F60E8',
+  gradientEnd: '#6C52E8',
+  divider: '#E8EAF0',
 };
 
 const darkColors: ThemeColors = {
@@ -77,7 +79,7 @@ const darkColors: ThemeColors = {
   surface: '#1A1A1F',
   text: '#F0F1F3',
   textSecondary: '#8A8F9A',
-  textTertiary: '#4E5460',
+  textTertiary: '#5A5F6A',
   primary: '#7C8AFF',
   primaryLight: '#1E2040',
   primaryDark: '#9DA6FF',
@@ -93,13 +95,14 @@ const darkColors: ThemeColors = {
   warningLight: '#2D241A',
   tabBarBackground: '#1A1A1F',
   tabBarActive: '#7C8AFF',
-  tabBarInactive: '#4E5460',
+  tabBarInactive: '#5A5F6A',
   inputBackground: '#141418',
-  placeholder: '#4E5460',
+  placeholder: '#5A5F6A',
   shadow: 'rgba(0, 0, 0, 0.3)',
   overlay: 'rgba(0, 0, 0, 0.6)',
   gradientStart: '#7C8AFF',
   gradientEnd: '#A78BFA',
+  divider: '#22222B',
 };
 
 const THEME_STORAGE_KEY = '@keep_accounts_theme';

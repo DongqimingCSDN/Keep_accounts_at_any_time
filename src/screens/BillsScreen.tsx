@@ -182,7 +182,7 @@ export default function BillsScreen({ navigation }: any) {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <MonthPicker currentMonth={currentMonth} onChange={handleMonthChange} />
 
-      <View style={[styles.dateRow, { backgroundColor: colors.surface, borderBottomColor: colors.borderLight }]}>
+      <View style={[styles.dateRow, { backgroundColor: colors.surface, borderBottomColor: colors.divider }]}>
         <ScrollView
           ref={dateScrollRef}
           horizontal
@@ -249,7 +249,7 @@ export default function BillsScreen({ navigation }: any) {
       </View>
 
       {selectedDate && selectedDaySummary && (
-        <View style={[styles.daySummary, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+        <View style={[styles.daySummary, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
           <Text style={[styles.daySummaryTitle, { color: colors.text }]}>
             {dayjs(selectedDate).format('M月D日 dddd')}
           </Text>
@@ -351,7 +351,7 @@ export default function BillsScreen({ navigation }: any) {
       <Modal visible={filterVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
+            <View style={[styles.modalHeader, { borderBottomColor: colors.divider }]}>
               <Text style={[styles.modalTitle, { color: colors.text }]}>选择分类</Text>
               <TouchableOpacity onPress={() => setFilterVisible(false)}>
                 <Text style={[styles.modalClose, { color: colors.textSecondary }]}>✕</Text>
@@ -366,7 +366,7 @@ export default function BillsScreen({ navigation }: any) {
                   <TouchableOpacity
                     style={[
                       styles.categoryItem,
-                      { borderBottomColor: colors.border },
+                      { borderBottomColor: colors.divider },
                       isSelected && { backgroundColor: colors.primaryLight },
                     ]}
                     onPress={() => toggleCategoryFilter(item.id)}
@@ -379,7 +379,7 @@ export default function BillsScreen({ navigation }: any) {
                 );
               }}
             />
-            <View style={[styles.modalActions, { borderTopColor: colors.border }]}>
+            <View style={[styles.modalActions, { borderTopColor: colors.divider }]}>
               <TouchableOpacity
                 style={[styles.modalBtn, { backgroundColor: colors.background }]}
                 onPress={clearFilter}
@@ -439,11 +439,12 @@ const styles = StyleSheet.create({
   daySummary: {
     marginHorizontal: 12,
     marginTop: 10,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 14,
+    borderWidth: 0.5,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
     elevation: 3,
   },
   daySummaryTitle: {

@@ -14,7 +14,7 @@ import TransferScreen from '../screens/TransferScreen';
 import SmartAssistantSettingsScreen from '../screens/SmartAssistantSettingsScreen';
 
 export type SettingsStackParamList = {
-  SettingsMain: undefined;
+  SettingsMain: { autoNavigateTo?: string } | undefined;
   About: undefined;
   CategoryManage: undefined;
   Budget: undefined;

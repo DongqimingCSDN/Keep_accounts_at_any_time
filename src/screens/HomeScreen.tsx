@@ -230,7 +230,7 @@ export default function HomeScreen({ navigation }: any) {
           </LinearGradient>
         </View>
 
-        <View style={[styles.todayCard, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+        <View style={[styles.todayCard, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
           <Text style={[styles.cardTitle, { color: colors.text }]}>今日收支</Text>
           <View style={styles.todaySection}>
             <View style={styles.todayTagWrap}>
@@ -270,8 +270,16 @@ export default function HomeScreen({ navigation }: any) {
           )}
         </View>
 
-        <View style={[styles.card, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
-          <Text style={[styles.cardTitle, { color: colors.text }]}>预算使用进度</Text>
+        <View style={[styles.card, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
+          <View style={styles.cardTitleRow}>
+            <Text style={[styles.cardTitle, { color: colors.text }]}>预算使用进度</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Settings', { autoNavigateTo: 'Budget' })}
+              activeOpacity={0.6}
+            >
+              <Text style={[styles.manageLink, { color: colors.primary }]}>管理</Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.budgetSection}>
             <View style={styles.budgetRow}>
@@ -368,7 +376,7 @@ export default function HomeScreen({ navigation }: any) {
           )}
         </View>
 
-        <View style={[styles.card, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+        <View style={[styles.card, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
           <View style={styles.recentHeader}>
             <Text style={[styles.cardTitle, { color: colors.text, marginBottom: 0 }]}>最近交易</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Bills')}>
@@ -421,7 +429,7 @@ export default function HomeScreen({ navigation }: any) {
               return (
                 <TouchableOpacity
                   key={transaction.id}
-                  style={[styles.transactionItem, { borderBottomColor: colors.borderLight }]}
+                  style={[styles.transactionItem, { borderBottomColor: colors.divider }]}
                   activeOpacity={0.7}
                   onLongPress={() => {
                     if (transaction.userId && transaction.userId !== currentUserId) {
@@ -485,19 +493,6 @@ export default function HomeScreen({ navigation }: any) {
           )}
         </View>
       </ScrollView>
-
-      <TouchableOpacity
-        style={[styles.fab, { backgroundColor: colors.primary }]}
-        onPress={() => {
-          const parentNav = navigation.getParent();
-          parentNav
-            ? parentNav.navigate('AddTransaction', {})
-            : navigation.navigate('AddTransaction', {});
-        }}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.fabIcon}>＋</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -533,10 +528,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     marginBottom: 16,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 16,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 8,
   },
   overviewGradient: {
     padding: 24,
@@ -609,25 +604,37 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
+    borderWidth: 0.5,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   card: {
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
+    borderWidth: 0.5,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   cardTitle: {
     fontSize: 17,
     fontWeight: '600',
     marginBottom: 16,
     letterSpacing: 0.3,
+  },
+  cardTitleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  manageLink: {
+    fontSize: 14,
+    fontWeight: '500',
   },
   todaySection: {
     flexDirection: 'row',
@@ -683,13 +690,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   progressBarBg: {
-    height: 6,
-    borderRadius: 3,
+    height: 8,
+    borderRadius: 4,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    borderRadius: 3,
+    borderRadius: 4,
   },
   budgetFooter: {
     flexDirection: 'row',
@@ -763,9 +770,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   transactionIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 46,
+    height: 46,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -800,11 +807,12 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 6,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    borderWidth: 1,
   },
   fabIcon: {
     color: '#FFFFFF',

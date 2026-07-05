@@ -78,101 +78,105 @@ export default function FloatingAssistant({ onScreenshotRecognize, onQuickBook, 
   };
 
   return (
-    <View style={styles.overlay} pointerEvents="box-none">
+    <>
       {isExpanded && (
-        <TouchableOpacity
-          style={styles.expandOverlay}
-          activeOpacity={1}
-          onPress={handleClose}
-        >
-          <View style={[styles.menuPanel, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
-            <Text style={[styles.menuTitle, { color: colors.text }]}>记账助手</Text>
+        <View style={styles.overlay} pointerEvents="box-none">
+          <TouchableOpacity
+            style={styles.expandOverlay}
+            activeOpacity={1}
+            onPress={handleClose}
+          >
+            <View style={[styles.menuPanel, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+              <Text style={[styles.menuTitle, { color: colors.text }]}>记账助手</Text>
 
-            <TouchableOpacity
-              style={[styles.menuItem, { borderBottomColor: colors.borderLight }]}
-              onPress={() => handleMenuAction(() => onScreenshotRecognize?.())}
-              activeOpacity={0.6}
-            >
-              <View style={[styles.menuItemIconWrap, { backgroundColor: colors.primaryLight }]}>
-                <Text style={styles.menuItemEmoji}>📸</Text>
-              </View>
-              <View style={styles.menuItemInfo}>
-                <Text style={[styles.menuItemLabel, { color: colors.text }]}>截屏识别</Text>
-                <Text style={[styles.menuItemHint, { color: colors.textTertiary }]}>从相册选择截图自动识别</Text>
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.menuItem, { borderBottomColor: colors.borderLight }]}
+                onPress={() => handleMenuAction(() => onScreenshotRecognize?.())}
+                activeOpacity={0.6}
+              >
+                <View style={[styles.menuItemIconWrap, { backgroundColor: colors.primaryLight }]}>
+                  <Text style={styles.menuItemEmoji}>📸</Text>
+                </View>
+                <View style={styles.menuItemInfo}>
+                  <Text style={[styles.menuItemLabel, { color: colors.text }]}>截屏识别</Text>
+                  <Text style={[styles.menuItemHint, { color: colors.textTertiary }]}>从相册选择截图自动识别</Text>
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.menuItem, { borderBottomColor: colors.borderLight }]}
-              onPress={() => handleMenuAction(() => onQuickBook?.())}
-              activeOpacity={0.6}
-            >
-              <View style={[styles.menuItemIconWrap, { backgroundColor: colors.successLight }]}>
-                <Text style={styles.menuItemEmoji}>✏️</Text>
-              </View>
-              <View style={styles.menuItemInfo}>
-                <Text style={[styles.menuItemLabel, { color: colors.text }]}>快速记账</Text>
-                <Text style={[styles.menuItemHint, { color: colors.textTertiary }]}>直接打开记账页面</Text>
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.menuItem, { borderBottomColor: colors.borderLight }]}
+                onPress={() => handleMenuAction(() => onQuickBook?.())}
+                activeOpacity={0.6}
+              >
+                <View style={[styles.menuItemIconWrap, { backgroundColor: colors.successLight }]}>
+                  <Text style={styles.menuItemEmoji}>✏️</Text>
+                </View>
+                <View style={styles.menuItemInfo}>
+                  <Text style={[styles.menuItemLabel, { color: colors.text }]}>快速记账</Text>
+                  <Text style={[styles.menuItemHint, { color: colors.textTertiary }]}>直接打开记账页面</Text>
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.menuItem, { borderBottomColor: colors.borderLight }]}
-              onPress={() => handleMenuAction(() => onTextBookkeeping?.())}
-              activeOpacity={0.6}
-            >
-              <View style={[styles.menuItemIconWrap, { backgroundColor: colors.warningLight }]}>
-                <Text style={styles.menuItemEmoji}>💬</Text>
-              </View>
-              <View style={styles.menuItemInfo}>
-                <Text style={[styles.menuItemLabel, { color: colors.text }]}>文字记账</Text>
-                <Text style={[styles.menuItemHint, { color: colors.textTertiary }]}>用自然语言描述快速记账</Text>
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.menuItem, { borderBottomColor: colors.borderLight }]}
+                onPress={() => handleMenuAction(() => onTextBookkeeping?.())}
+                activeOpacity={0.6}
+              >
+                <View style={[styles.menuItemIconWrap, { backgroundColor: colors.warningLight }]}>
+                  <Text style={styles.menuItemEmoji}>💬</Text>
+                </View>
+                <View style={styles.menuItemInfo}>
+                  <Text style={[styles.menuItemLabel, { color: colors.text }]}>文字记账</Text>
+                  <Text style={[styles.menuItemHint, { color: colors.textTertiary }]}>用自然语言描述快速记账</Text>
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={handleClose}
-              activeOpacity={0.6}
-            >
-              <View style={[styles.menuItemIconWrap, { backgroundColor: colors.inputBackground }]}>
-                <Text style={styles.menuItemEmoji}>✕</Text>
-              </View>
-              <View style={styles.menuItemInfo}>
-                <Text style={[styles.menuItemLabel, { color: colors.textSecondary }]}>收起</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={handleClose}
+                activeOpacity={0.6}
+              >
+                <View style={[styles.menuItemIconWrap, { backgroundColor: colors.inputBackground }]}>
+                  <Text style={styles.menuItemEmoji}>✕</Text>
+                </View>
+                <View style={styles.menuItemInfo}>
+                  <Text style={[styles.menuItemLabel, { color: colors.textSecondary }]}>收起</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </View>
       )}
 
-      <Animated.View
-        style={[
-          styles.assistant,
-          {
-            transform: [{ translateX: pan.x }, { translateY: pan.y }],
-            shadowColor: '#FF6B6B',
-          },
-        ]}
-        {...panResponder.panHandlers}
-      >
-        <LinearGradient
-          colors={isDragging ? ['#EE5A5A', '#F07B3F'] : ['#FF6B6B', '#FF8E53']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.assistantGradient}
+      {!isExpanded && (
+        <Animated.View
+          style={[
+            styles.assistant,
+            {
+              transform: [{ translateX: pan.x }, { translateY: pan.y }],
+              shadowColor: '#FF6B6B',
+            },
+          ]}
+          {...panResponder.panHandlers}
         >
-          <View style={styles.iconInner}>
-            <MaterialCommunityIcons name="wallet-outline" size={26} color="#FFFFFF" />
-          </View>
-          {hasNotification && (
-            <View style={styles.badge}>
-              <View style={[styles.badgeDot, { backgroundColor: '#FF3B30' }]} />
+          <LinearGradient
+            colors={isDragging ? ['#EE5A5A', '#F07B3F'] : ['#FF6B6B', '#FF8E53']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.assistantGradient}
+          >
+            <View style={styles.iconInner}>
+              <MaterialCommunityIcons name="wallet-outline" size={26} color="#FFFFFF" />
             </View>
-          )}
-        </LinearGradient>
-      </Animated.View>
-    </View>
+            {hasNotification && (
+              <View style={styles.badge}>
+                <View style={[styles.badgeDot, { backgroundColor: '#FF3B30' }]} />
+              </View>
+            )}
+          </LinearGradient>
+        </Animated.View>
+      )}
+    </>
   );
 }
 

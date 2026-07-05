@@ -227,7 +227,7 @@ export default function AddTransactionScreen({ navigation, route }: Props) {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.amountContainer, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+        <View style={[styles.amountContainer, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
           <Text style={[styles.currencySymbol, { color: colors.text }]}>{currencySymbol}</Text>
           <TextInput
             style={[styles.amountInput, { color: colors.text }]}
@@ -282,7 +282,7 @@ export default function AddTransactionScreen({ navigation, route }: Props) {
           </View>
         </View>
 
-        <View style={[styles.dateRow, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+        <View style={[styles.dateRow, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
           <TouchableOpacity onPress={() => handleDateChange(-1)} style={styles.dateArrow}>
             <Text style={[styles.dateArrowText, { color: colors.primary }]}>{'‹'}</Text>
           </TouchableOpacity>
@@ -292,7 +292,7 @@ export default function AddTransactionScreen({ navigation, route }: Props) {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.dateRow, { backgroundColor: colors.card, marginTop: 8, shadowColor: colors.shadow }]}>
+        <View style={[styles.dateRow, { backgroundColor: colors.card, marginTop: 8, shadowColor: colors.shadow, borderColor: colors.border }]}>
           <TouchableOpacity onPress={() => handleTimeChange(-30)} style={styles.dateArrow}>
             <Text style={[styles.dateArrowText, { color: colors.primary }]}>{'‹'}</Text>
           </TouchableOpacity>
@@ -302,7 +302,7 @@ export default function AddTransactionScreen({ navigation, route }: Props) {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.noteContainer, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+        <View style={[styles.noteContainer, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
           <TextInput
             style={[styles.noteInput, { color: colors.text }]}
             placeholder="添加备注..."
@@ -314,7 +314,7 @@ export default function AddTransactionScreen({ navigation, route }: Props) {
         </View>
       </ScrollView>
 
-      <View style={[styles.confirmContainer, { backgroundColor: colors.background, borderTopColor: colors.borderLight }]}>
+      <View style={[styles.confirmContainer, { backgroundColor: colors.background, borderTopColor: colors.divider }]}>
         <TouchableOpacity
           style={[styles.confirmButton, { backgroundColor: saving ? colors.border : colors.primary, shadowColor: colors.shadow }]}
           onPress={handleConfirm}
@@ -364,10 +364,11 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 16,
     marginBottom: 20,
+    borderWidth: 0.5,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   currencySymbol: {
     fontSize: 28,
@@ -395,11 +396,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 10,
     marginBottom: 8,
+    borderWidth: 0.5,
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 1,
-    shadowRadius: 4,
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
     elevation: 1,
   },
   dateArrow: {
@@ -417,13 +419,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   noteContainer: {
-    borderRadius: 12,
+    borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
     marginBottom: 16,
+    borderWidth: 0.5,
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 1,
-    shadowRadius: 4,
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
     elevation: 1,
   },
   noteInput: {
@@ -458,11 +461,11 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     height: 52,
-    borderRadius: 14,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 4,
   },

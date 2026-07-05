@@ -129,7 +129,7 @@ export default function AccountManageScreen() {
         activeOpacity={0.9}
         style={[
           styles.card,
-          { backgroundColor: colors.card, borderColor: colors.border },
+          { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow },
           isActive && styles.cardActive,
         ]}
       >
@@ -149,7 +149,7 @@ export default function AccountManageScreen() {
         </View>
         <View style={styles.cardRight}>
           <TouchableOpacity
-            style={[styles.actionBtn, { borderColor: colors.border }]}
+            style={[styles.actionBtn, { borderColor: colors.divider }]}
             onPress={() => handleEdit(item)}
           >
             <Text style={[styles.actionText, { color: colors.primary }]}>编辑</Text>
@@ -333,10 +333,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 12,
+    borderWidth: 0.5,
+    borderRadius: 16,
     padding: 14,
     marginBottom: 10,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   cardActive: {
     elevation: 6,
@@ -363,7 +367,7 @@ const styles = StyleSheet.create({
   iconWrap: {
     width: 44,
     height: 44,
-    borderRadius: 10,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -388,8 +392,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionBtn: {
-    borderWidth: 1,
-    borderRadius: 6,
+    borderWidth: 0.5,
+    borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 6,
     marginLeft: 8,

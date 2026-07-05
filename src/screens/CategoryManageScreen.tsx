@@ -80,7 +80,7 @@ export default function CategoryManageScreen() {
   };
 
   const renderItem = ({ item }: { item: Category }) => (
-    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow }]}>
       <View style={styles.cardLeft}>
         <View style={[styles.iconWrap, { backgroundColor: item.color + '20' }]}>
           <Text style={styles.iconText}>{item.icon}</Text>
@@ -213,10 +213,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 12,
+    borderWidth: 0.5,
+    borderRadius: 16,
     padding: 14,
     marginBottom: 10,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   cardLeft: {
     flexDirection: 'row',

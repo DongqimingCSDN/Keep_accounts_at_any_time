@@ -412,7 +412,7 @@ export default function StatisticsScreen() {
         </View>
       </View>
 
-      <View style={[styles.overviewCard, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+      <View style={[styles.overviewCard, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
         <View style={styles.overviewSection}>
           <View style={styles.overviewTagRow}>
             <View style={[styles.scopeTag, { backgroundColor: '#E8F5E9' }]}>
@@ -478,7 +478,7 @@ export default function StatisticsScreen() {
         )}
       </View>
 
-      <View style={[styles.sectionCard, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+      <View style={[styles.sectionCard, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>支出分类占比</Text>
           {inFamily && (
@@ -529,7 +529,7 @@ export default function StatisticsScreen() {
         )}
       </View>
 
-      <View style={[styles.sectionCard, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+      <View style={[styles.sectionCard, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>资金账户收支</Text>
         </View>
@@ -581,7 +581,7 @@ export default function StatisticsScreen() {
         )}
       </View>
 
-      <View style={[styles.sectionCard, { backgroundColor: colors.card, shadowColor: colors.shadow }]}>
+      <View style={[styles.sectionCard, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>收支趋势</Text>
           {inFamily && (
@@ -648,7 +648,7 @@ export default function StatisticsScreen() {
           activeOpacity={1}
           onPress={handleCustomCancel}
         >
-          <View style={[styles.modalPanel, { backgroundColor: colors.card, shadowColor: colors.shadow }]} onStartShouldSetResponder={() => true}>
+          <View style={[styles.modalPanel, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]} onStartShouldSetResponder={() => true}>
             <Text style={[styles.modalTitle, { color: colors.text }]}>自定义日期段</Text>
 
             <CalendarPicker
@@ -814,10 +814,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
+    borderWidth: 0.5,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   overviewRow: {
     flexDirection: 'row',
@@ -845,10 +846,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
+    borderWidth: 0.5,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   sectionTitle: {
     fontSize: 17,

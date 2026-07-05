@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -28,7 +28,7 @@ import type { ExportEntry } from '../utils/StorageService';
 
 type Props = NativeStackScreenProps<SettingsStackParamList, 'SettingsMain'>;
 
-export default function SettingsScreen({ navigation }: Props) {
+export default function SettingsScreen({ navigation, route }: Props) {
   const { colors, isDark, setTheme } = useTheme();
   const { state, updateSettings, refreshData, logout } = useApp();
   const [currencyModalVisible, setCurrencyModalVisible] = useState(false);
@@ -37,6 +37,18 @@ export default function SettingsScreen({ navigation }: Props) {
   const [reminderModalVisible, setReminderModalVisible] = useState(false);
   const [reminderHour, setReminderHour] = useState('20');
   const [reminderMinute, setReminderMinute] = useState('00');
+
+  // 处理从首页等页面直接跳转到子页面的自动导航
+  useEffect(() => {
+    const autoNav = route.params?.autoNavigateTo;
+    if (autoNav) {
+      // 使用 setTimeout 确保 SettingsMain 已完全渲染
+      const timer = setTimeout(() => {
+        navigation.navigate(autoNav as any);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [route.params?.autoNavigateTo]);
 
   const reminderEnabled = state.settings.reminderEnabled || false;
   const reminderTime = state.settings.reminderTime || '20:00';
@@ -286,7 +298,7 @@ export default function SettingsScreen({ navigation }: Props) {
         <Text style={[styles.sectionHeader, { color: colors.textSecondary }]}>通用</Text>
 
         <TouchableOpacity
-          style={[styles.item, { borderBottomColor: colors.border }]}
+          style={[styles.item, { borderBottomColor: colors.divider }]}
           onPress={() => setCurrencyModalVisible(true)}
           activeOpacity={0.6}
         >
@@ -299,7 +311,7 @@ export default function SettingsScreen({ navigation }: Props) {
           </View>
         </TouchableOpacity>
 
-        <View style={[styles.item, { borderBottomColor: colors.border }]}>
+        <View style={[styles.item, { borderBottomColor: colors.divider }]}>
           <Text style={[styles.itemLabel, { color: colors.text }]}>深色模式</Text>
           <Switch
             value={isDark}
@@ -309,7 +321,7 @@ export default function SettingsScreen({ navigation }: Props) {
           />
         </View>
 
-        <View style={[styles.item, { borderBottomColor: colors.border }]}>
+        <View style={[styles.item, { borderBottomColor: colors.divider }]}>
           <Text style={[styles.itemLabel, { color: colors.text }]}>记账助手</Text>
           <Switch
             value={state.settings.showAssistant || false}
@@ -319,7 +331,7 @@ export default function SettingsScreen({ navigation }: Props) {
           />
         </View>
 
-        <View style={[styles.item, { borderBottomColor: colors.border }]}>
+        <View style={[styles.item, { borderBottomColor: colors.divider }]}>
           <Text style={[styles.itemLabel, { color: colors.text }]}>记账提醒</Text>
           <Switch
             value={reminderEnabled}
@@ -337,7 +349,7 @@ export default function SettingsScreen({ navigation }: Props) {
 
         {reminderEnabled && (
           <TouchableOpacity
-            style={[styles.item, { borderBottomColor: colors.border }]}
+            style={[styles.item, { borderBottomColor: colors.divider }]}
             onPress={() => {
               const [h, m] = reminderTime.split(':');
               setReminderHour(h);
@@ -358,7 +370,7 @@ export default function SettingsScreen({ navigation }: Props) {
 
         {state.settings.showAssistant && (
           <TouchableOpacity
-            style={[styles.item, { borderBottomColor: colors.border }]}
+            style={[styles.item, { borderBottomColor: colors.divider }]}
             onPress={() => navigation.navigate('SmartAssistantSettings')}
             activeOpacity={0.6}
           >
@@ -371,12 +383,12 @@ export default function SettingsScreen({ navigation }: Props) {
         )}
       </View>
 
-      {/* 数据管理 */}
+      {/* 记账设置 */}
       <View style={[styles.section, { backgroundColor: colors.card }]}>
-        <Text style={[styles.sectionHeader, { color: colors.textSecondary }]}>数据管理</Text>
+        <Text style={[styles.sectionHeader, { color: colors.textSecondary }]}>记账设置</Text>
 
         <TouchableOpacity
-          style={[styles.item, { borderBottomColor: colors.border }]}
+          style={[styles.item, { borderBottomColor: colors.divider }]}
           onPress={() => navigation.navigate('CategoryManage')}
           activeOpacity={0.6}
         >
@@ -387,7 +399,7 @@ export default function SettingsScreen({ navigation }: Props) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.item, { borderBottomColor: colors.border }]}
+          style={[styles.item, { borderBottomColor: colors.divider }]}
           onPress={() => navigation.navigate('AccountManage')}
           activeOpacity={0.6}
         >
@@ -398,7 +410,18 @@ export default function SettingsScreen({ navigation }: Props) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.item, { borderBottomColor: colors.border }]}
+          style={[styles.item, { borderBottomColor: colors.divider }]}
+          onPress={() => navigation.navigate('Budget')}
+          activeOpacity={0.6}
+        >
+          <Text style={[styles.itemLabel, { color: colors.text }]}>预算管理</Text>
+          <View style={styles.itemRight}>
+            {renderArrow()}
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.item, { borderBottomColor: colors.divider }]}
           onPress={() => navigation.navigate('AutoTransactionManage')}
           activeOpacity={0.6}
         >
@@ -407,17 +430,6 @@ export default function SettingsScreen({ navigation }: Props) {
             <Text style={[styles.itemValue, { color: colors.textSecondary }]}>
               {state.autoTransactions.filter((r) => r.enabled).length} 条规则
             </Text>
-            {renderArrow()}
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.item, { borderBottomColor: colors.border }]}
-          onPress={() => navigation.navigate('Budget')}
-          activeOpacity={0.6}
-        >
-          <Text style={[styles.itemLabel, { color: colors.text }]}>预算管理</Text>
-          <View style={styles.itemRight}>
             {renderArrow()}
           </View>
         </TouchableOpacity>
@@ -438,9 +450,14 @@ export default function SettingsScreen({ navigation }: Props) {
             </View>
           </TouchableOpacity>
         )}
+      </View>
+
+      {/* 数据管理 */}
+      <View style={[styles.section, { backgroundColor: colors.card }]}>
+        <Text style={[styles.sectionHeader, { color: colors.textSecondary }]}>数据管理</Text>
 
         <TouchableOpacity
-          style={[styles.item, { borderBottomColor: colors.border }]}
+          style={[styles.item, { borderBottomColor: colors.divider }]}
           onPress={handleOpenExportModal}
           activeOpacity={0.6}
           disabled={exporting}
@@ -470,7 +487,7 @@ export default function SettingsScreen({ navigation }: Props) {
         <Text style={[styles.sectionHeader, { color: colors.textSecondary }]}>其他</Text>
 
         <TouchableOpacity
-          style={[styles.item, { borderBottomColor: colors.border }]}
+          style={[styles.item, { borderBottomColor: colors.divider }]}
           onPress={() => navigation.navigate('About')}
           activeOpacity={0.6}
         >
@@ -486,7 +503,7 @@ export default function SettingsScreen({ navigation }: Props) {
         <View style={[styles.section, { backgroundColor: colors.card }]}>
           <Text style={[styles.sectionHeader, { color: colors.textSecondary }]}>账户</Text>
 
-          <View style={[styles.item, { borderBottomColor: colors.border }]}>
+          <View style={[styles.item, { borderBottomColor: colors.divider }]}>
             <Text style={[styles.itemLabel, { color: colors.text }]}>邮箱</Text>
             <Text style={[styles.itemValue, { color: colors.textSecondary }]}>
               {state.currentUser.email}
@@ -874,7 +891,7 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   arrow: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '300',
   },
   modalOverlay: {

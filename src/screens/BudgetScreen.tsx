@@ -296,7 +296,7 @@ export default function BudgetScreen() {
 
         {!hasAnyBudget ? (
           /* 未设置预算 - 引导设置界面 */
-          <View style={[styles.emptyCard, { backgroundColor: colors.card }]}>
+          <View style={[styles.emptyCard, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
             <Text style={styles.emptyIcon}>💰</Text>
             <Text style={[styles.emptyTitle, { color: colors.text }]}>
               还未设置{currentContextName}本月预算
@@ -314,7 +314,7 @@ export default function BudgetScreen() {
         ) : (
           <>
             {/* 总预算进度卡片 */}
-            <View style={[styles.card, { backgroundColor: colors.card }]}>
+            <View style={[styles.card, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
               <View style={styles.cardHeader}>
                 <Text style={[styles.cardTitle, { color: colors.text }]}>
                   {currentContextName}总预算进度
@@ -393,7 +393,7 @@ export default function BudgetScreen() {
             </View>
 
             {/* 分类预算卡片 */}
-            <View style={[styles.card, { backgroundColor: colors.card }]}>
+            <View style={[styles.card, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
               <View style={styles.cardHeader}>
                 <Text style={[styles.cardTitle, { color: colors.text }]}>
                   分类预算
@@ -488,7 +488,7 @@ export default function BudgetScreen() {
           style={styles.modalOverlay}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+          <View style={[styles.modalContent, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border }]}>
             <Text style={[styles.modalTitle, { color: colors.text }]}>
               {editingCategory ? `设置「${editingCategory.name}」预算` : '设置总预算'}
             </Text>
@@ -649,6 +649,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
+    borderWidth: 0.5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   cardHeader: {
     flexDirection: 'row',
